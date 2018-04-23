@@ -1,9 +1,9 @@
-@extends('main')
+@extends('layouts.main')
 
 
 @section('title')
     Sign up
-    @endsection
+@endsection
 
 @section('style')
     * {
@@ -17,7 +17,7 @@
     #regForm {
     background-color: #ffffff;
     margin: 100px auto;
-    font-family: Raleway;
+    font-family: Calibry;
     padding: 40px;
     width: 70%;
     min-width: 300px;
@@ -31,7 +31,7 @@
     padding: 10px;
     width: 100%;
     font-size: 17px;
-    font-family: Raleway;
+    font-family: Calibry;
     border: 1px solid #aaaaaa;
     }
 
@@ -83,138 +83,274 @@
     .step.finish {
     background-color: #4CAF50;
     }
-    @endsection
+@endsection
 
 @section('body')
+
+
+
     <div class="container">
-    <form id="regForm" action="/signup" method="post">
-        {{--<input name="_method" type="hidden" value="PATCH">--}}
-
-        {{ csrf_field() }}
 
 
-        @if (count($errors) > 0)
-            <div class = "alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+        <form id="regForm" action="/signup" method="post">
+            {{--<input name="_method" type="hidden" value="PATCH">--}}
+
+            {{ csrf_field() }}
+
+
+            {{--@if (count($errors) > 0)--}}
+                {{--<div class="alert alert-danger">--}}
+                    {{--<ul>--}}
+                        {{--@foreach ($errors->all() as $error)--}}
+                            {{--<li>{{ $error }}</li>--}}
+                        {{--@endforeach--}}
+                    {{--</ul>--}}
+                {{--</div>--}}
+            {{--@endif--}}
+
+
+
+
+            {{--@if (session('status'))--}}
+                {{--<div class="alert alert-success">--}}
+                    {{--{{ session('status') }}--}}
+                {{--</div>--}}
+            {{--@endif--}}
+
+
+
+@include('partials.messages')
+
+
+
+
+
+            <div class="panel panel-default">
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="panel-heading">
+            <h1>Sign Up:</h1>
+
             </div>
-        @endif
 
 
 
 
-            @if (session('status'))
-                <div class="alert alert-success">
-                    {{ session('status') }}
+
+
+
+                <div class="panel-body">
+
+
+
+                <!-- One "tab" for each step in the form: -->
+            <div class="tab"><h3>Credentials:</h3>
+                <p><input placeholder="Email" oninput="this.className = ''" name="email"></p>
+                <p><input placeholder="Password" type="password" oninput="this.className = ''" name="password"></p>
+                <p><input placeholder="Confirm Password" type="password" oninput="this.className = ''"
+                          name="password_confirmation"></p>
+            </div>
+            <div class="tab"><h3>Details:</h3>
+                <p><input placeholder="Full Name" oninput="this.className = ''" name="fullname"></p>
+                <p><input placeholder="Address" oninput="this.className = ''" name="address"></p>
+                <p><input placeholder="Contact Number" oninput="this.className = ''" name="contactnumber"></p>
+                <p><input placeholder="Description" oninput="this.className = ''" name="description"></p>
+            </div>
+
+
+
+            <div style="overflow:auto;">
+                <div style="float:right;">
+                    <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+                    <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
                 </div>
-            @endif
-
-
-
-        <h1>Sign Up:</h1>
-        <!-- One "tab" for each step in the form: -->
-        <div class="tab">Credentials:
-            <p><input placeholder="Email" oninput="this.className = ''" name="email"></p>
-            <p><input placeholder="Password" oninput="this.className = ''" name="password"></p>
-            <p><input placeholder="Confirm Password" oninput="this.className = ''" name="password_confirmation"></p>
-        </div>
-        <div class="tab">Details:
-            <p><input placeholder="Full Name" oninput="this.className = ''" name="fullname"></p>
-            <p><input placeholder="Address" oninput="this.className = ''" name="address"></p>
-            <p><input placeholder="Contact Number" oninput="this.className = ''" name="contactnumber"></p>
-            <p><input placeholder="Description" oninput="this.className = ''" name="description"></p>
-        </div>
-
-        <div style="overflow:auto;">
-            <div style="float:right;">
-                <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-                <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
             </div>
-        </div>
-        <!-- Circles which indicates the steps of the form: -->
-        <div style="text-align:center;margin-top:40px;">
-            <span class="step"></span>
-            <span class="step"></span>
+            <!-- Circles which indicates the steps of the form: -->
+            <div style="text-align:center;margin-top:40px;">
+                <span class="step"></span>
+                <span class="step"></span>
 
-        </div>
-    </form>
+            </div>
 
-    <script>
-        var currentTab = 0; // Current tab is set to be the first tab (0)
-        showTab(currentTab); // Display the crurrent tab
 
-        function showTab(n) {
-            // This function will display the specified tab of the form...
-            var x = document.getElementsByClassName("tab");
-            x[n].style.display = "block";
-            //... and fix the Previous/Next buttons:
-            if (n == 0) {
-                document.getElementById("prevBtn").style.display = "none";
-            } else {
-                document.getElementById("prevBtn").style.display = "inline";
-            }
-            if (n == (x.length - 1)) {
-                document.getElementById("nextBtn").innerHTML = "Submit";
-            } else {
-                document.getElementById("nextBtn").innerHTML = "Next";
-            }
-            //... and run a function that will display the correct step indicator:
-            fixStepIndicator(n)
-        }
 
-        function nextPrev(n) {
-            // This function will figure out which tab to display
-            var x = document.getElementsByClassName("tab");
-            // Exit the function if any field in the current tab is invalid:
-            if (n == 1 && !validateForm()) return false;
-            // Hide the current tab:
-            x[currentTab].style.display = "none";
-            // Increase or decrease the current tab by 1:
-            currentTab = currentTab + n;
-            // if you have reached the end of the form...
-            if (currentTab >= x.length) {
-                // ... the form gets submitted:
-                document.getElementById("regForm").submit();
-                return false;
-            }
-            // Otherwise, display the correct tab:
-            showTab(currentTab);
-        }
 
-        function validateForm() {
-            // This function deals with validation of the form fields
-            var x, y, i, valid = true;
-            x = document.getElementsByClassName("tab");
-            y = x[currentTab].getElementsByTagName("input");
-            // A loop that checks every input field in the current tab:
-            for (i = 0; i < y.length; i++) {
-                // If a field is empty...
-                if (y[i].value == "") {
-                    // add an "invalid" class to the field:
-                    y[i].className += " invalid";
-                    // and set the current valid status to false
-                    valid = false;
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </form>
+
+        <script>
+            var currentTab = 0; // Current tab is set to be the first tab (0)
+            showTab(currentTab); // Display the crurrent tab
+
+            function showTab(n) {
+                // This function will display the specified tab of the form...
+                var x = document.getElementsByClassName("tab");
+                x[n].style.display = "block";
+                //... and fix the Previous/Next buttons:
+                if (n == 0) {
+                    document.getElementById("prevBtn").style.display = "none";
+                } else {
+                    document.getElementById("prevBtn").style.display = "inline";
                 }
+                if (n == (x.length - 1)) {
+                    document.getElementById("nextBtn").innerHTML = "Submit";
+                } else {
+                    document.getElementById("nextBtn").innerHTML = "Next";
+                }
+                //... and run a function that will display the correct step indicator:
+                fixStepIndicator(n)
             }
-            // If the valid status is true, mark the step as finished and valid:
-            if (valid) {
-                document.getElementsByClassName("step")[currentTab].className += " finish";
-            }
-            return valid; // return the valid status
-        }
 
-        function fixStepIndicator(n) {
-            // This function removes the "active" class of all steps...
-            var i, x = document.getElementsByClassName("step");
-            for (i = 0; i < x.length; i++) {
-                x[i].className = x[i].className.replace(" active", "");
+            function nextPrev(n) {
+                // This function will figure out which tab to display
+                var x = document.getElementsByClassName("tab");
+                // Exit the function if any field in the current tab is invalid:
+                if (n == 1 && !validateForm()) return false;
+                // Hide the current tab:
+                x[currentTab].style.display = "none";
+                // Increase or decrease the current tab by 1:
+                currentTab = currentTab + n;
+                // if you have reached the end of the form...
+                if (currentTab >= x.length) {
+                    // ... the form gets submitted:
+                    document.getElementById("regForm").submit();
+                    return false;
+                }
+                // Otherwise, display the correct tab:
+                showTab(currentTab);
             }
-            //... and adds the "active" class on the current step:
-            x[n].className += " active";
-        }
-    </script>
+
+            function validateForm() {
+                // This function deals with validation of the form fields
+                var x, y, i, valid = true;
+                x = document.getElementsByClassName("tab");
+                y = x[currentTab].getElementsByTagName("input");
+                // A loop that checks every input field in the current tab:
+                for (i = 0; i < y.length; i++) {
+                    // If a field is empty...
+                    if (y[i].value == "") {
+                        // add an "invalid" class to the field:
+                        y[i].className += " invalid";
+                        // and set the current valid status to false
+                        valid = false;
+                    }
+                }
+                // If the valid status is true, mark the step as finished and valid:
+                if (valid) {
+                    document.getElementsByClassName("step")[currentTab].className += " finish";
+                }
+                return valid; // return the valid status
+            }
+
+            function fixStepIndicator(n) {
+                // This function removes the "active" class of all steps...
+                var i, x = document.getElementsByClassName("step");
+                for (i = 0; i < x.length; i++) {
+                    x[i].className = x[i].className.replace(" active", "");
+                }
+                //... and adds the "active" class on the current step:
+                x[n].className += " active";
+            }
+        </script>
     </div>
-    @endsection
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
